@@ -76,8 +76,7 @@ bool PCA9685Activity::set(uint8_t channel, uint16_t value) {
     	values[2] = (value_12bit + 1) & 0xFF;
     	values[3] = (value_12bit + 1) >> 8;
     }
-    ROS_WARN_STREAM("setting " << int(channel) << " to " << int(value));
-    ROS_WARN_STREAM("i2c write " << int(PCA9685_CHANNEL_0_REG + (channel) * 4) << " to " << int(values[0]) << " " << int(values[1]) << " " << int(values[2]) << " " << int(values[3]));
+
     _i2c_smbus_write_i2c_block_data(file, PCA9685_CHANNEL_0_REG + (channel * 4), 4, values);
 }
 
