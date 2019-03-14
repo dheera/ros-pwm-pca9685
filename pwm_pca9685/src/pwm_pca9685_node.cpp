@@ -7,7 +7,6 @@
  */
 
 #include <pwm_pca9685/pca9685_activity.h>
-#include "watchdog/watchdog.h"
 #include <csignal>
 
 int main(int argc, char *argv[]) {
@@ -15,7 +14,6 @@ int main(int argc, char *argv[]) {
     ros::NodeHandle* nh_priv = NULL;
 
     pwm_pca9685::PCA9685Activity* activity = NULL;
-    watchdog::Watchdog* watchdog = NULL;
 
     ros::init(argc, argv, "pwm_pca9685_i2c_node");
 
@@ -35,7 +33,6 @@ int main(int argc, char *argv[]) {
     }
 
     activity = new pwm_pca9685::PCA9685Activity(*nh, *nh_priv);
-    watchdog = new watchdog::Watchdog();
 
     if(!activity) {
         ROS_FATAL("Failed to initialize driver");
@@ -53,20 +50,14 @@ int main(int argc, char *argv[]) {
         return -4;
     }
 
-    watchdog->start(5000);
-
     ros::Rate rate(100);
     while(ros::ok()) {
         rate.sleep();
-        if(activity->spinOnce()) {
-            watchdog->refresh();
-        }
+        activity->spinOnce();
     }
 
     activity->stop();
-    watchdog->stop();
 
-    delete watchdog;
     delete activity;
     delete nh_priv;
     delete nh;

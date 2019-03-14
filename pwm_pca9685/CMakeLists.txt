@@ -9,7 +9,7 @@ catkin_package(INCLUDE_DIRS include)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(pwm_pca9685_node src/pca9685_activity.cpp src/pwm_pca9685_node.cpp src/watchdog.cpp)
+add_executable(pwm_pca9685_node src/pca9685_activity.cpp src/pwm_pca9685_node.cpp)
 
 include_directories(${catkin_INCLUDE_DIRS})
 
