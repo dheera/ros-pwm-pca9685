@@ -29,12 +29,12 @@ None.
 
 ## With the Adafruit Motor Driver HAT
 
-The PCA9685 generates PWM signals which interface to two TB6612 motor drivers that handle 2 motors each. Three PCA9685 channels connect to each of the total of 4 H-bridges. The "extra" PWM pins (0, 1, 14, 15) not connected to any H-bridges are broken out on a separate header on the board.
+The PCA9685 generates PWM signals that are connected to two TB6612 dual motor driver chips, for a total of 4 motors. Three PCA9685 channels are connected to each motor, as described below, for a total of 4*3=12 channels wired to the motors. The 4 "extra" PWM pins (0, 1, 14, 15) are not connected to any motors are broken out on a separate header on the board.
 
 Refer to the [Toshiba TB6612FNG documentation](https://www.sparkfun.com/datasheets/Robotics/TB6612FNG.pdf) for more info on the TB6612.
 
-For each H-bridge, there are 3 pins: PWM, IN1, and IN2.
-* PWM should be a PWM signal (0 to 65535).
+For each motor, there are 3 pins: PWM, IN1, and IN2.
+* PWM should be a PWM signal (0 to 65535) indicating the amount of power.
 * IN1 should be binary, i.e. set to 0 OR 65535, nothing in-between.
 * IN2 should be binary, i.e. set to 0 OR 65535, nothing in-between.
 * IN1 = 65535, IN2 = 65535: Brake
