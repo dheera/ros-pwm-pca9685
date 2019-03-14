@@ -29,12 +29,14 @@ None.
 
 ## With the Adafruit Motor Driver HAT
 
-The PCA9685 generates PWM signals which interface to two TB6612 motor drivers that handle 2 motors each.
+The PCA9685 generates PWM signals which interface to two TB6612 motor drivers that handle 2 motors each. Three PCA9685 channels connect to each of the total of 4 H-bridges. The "extra" PWM pins (0, 1, 14, 15) not connected to any H-bridges are broken out on a separate header on the board.
+
 Refer to the [Toshiba TB6612FNG documentation](https://www.sparkfun.com/datasheets/Robotics/TB6612FNG.pdf) for more info on the TB6612.
 
+For each H-bridge, there are 3 pins: PWM, IN1, and IN2.
 * PWM should be a PWM signal (0 to 65535).
-* IN1 should be set to 0 OR 65535, nothing in-between.
-* IN2 should be set to 0 OR 65535, nothing in-between.
+* IN1 should be binary, i.e. set to 0 OR 65535, nothing in-between.
+* IN2 should be binary, i.e. set to 0 OR 65535, nothing in-between.
 * IN1 = 65535, IN2 = 65535: Brake
 * IN1 = 65535, IN2 = 0: Forward
 * IN1 = 0, IN2 = 65535: Reverse
@@ -46,3 +48,5 @@ Refer to the [Toshiba TB6612FNG documentation](https://www.sparkfun.com/datashee
 * Motor2: PWM = channel 13, IN1 = channel 11, IN2 = channel 12
 * Motor3: PWM = channel 2, IN1 = channel 3, IN2 = channel 4
 * Motor4: PWM = channel 7, IN1 = channel 5, IN2 = channel 6
+
+For example, to set motor 1 to forward at 50%, send ```{data: [-1, -1, -1, -1, -1, -1, -1, -1, 32767, 65535, 0, -1, -1, -1, -1, -1]}```
