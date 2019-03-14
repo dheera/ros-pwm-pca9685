@@ -14,9 +14,10 @@ There should be no dependencies besides libi2c-dev.
 * **device** -- the path to the i2c device. Default is /dev/i2c-1. Use i2cdetect in the i2c-tools package to find out which bus your IMU is on.
 * **address** -- the i2c address of the IMU. Default is 0x28.
 * **frequency** -- PWM frequency in Hz. Default is 1600.
+* **timeout** -- Timeout in milliseconds. If any particular channel is not updated in this time, that channel will be set to 0 until another update is received. Defaults to 5000.
 
 ## Subscribers
-* **command** -- a Int32MultiArray containing exactly 16 values corresponding to the 16 PWM channels. For each value, specify -1 to make no change to a channel. Specify a value between 0 and 65535 inclusive to update the channel's PWM value.
+* **command** -- a Int32MultiArray containing exactly 16 values corresponding to the 16 PWM channels. For each value, specify -1 to make no update to a channel. Specify a value between 0 and 65535 inclusive to update the channel's PWM value. For example, ```{data: [32767, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]}``` will update channel 0 to a PWM of 50%, channel 1 to 0%, and make no updates to other channels.
 
 ## Publishers
 None.

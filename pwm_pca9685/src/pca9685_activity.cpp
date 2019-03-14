@@ -18,7 +18,11 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
     nh_priv.param("address", param_address, (int)PCA9685_ADDRESS);
     nh_priv.param("frequency", param_frequency, (int)1600);
     nh_priv.param("frame_id", param_frame_id, (std::string)"imu");
+    nh_priv.param("timeout", param_timeout, (int)5000);
 
+    for(int channel = 0; channel < 16; channel++) {
+      last_set_times[channel] = 0;
+    }
 }
 
 // ******** private methods ******** //
@@ -82,6 +86,21 @@ bool PCA9685Activity::set(uint8_t channel, uint16_t value) {
 bool PCA9685Activity::start() {
     ROS_INFO("starting");
 
+    if(param_address < 0 || param_address > 127) {
+        ROS_ERROR("param address must be between 0 and 127 inclusive");
+	return false;
+    }
+
+    if(param_frequency <= 0) {
+        ROS_ERROR("param frequency must be positive");
+	return false;
+    }
+
+    if(param_timeout < 0) {
+        ROS_ERROR("param timeout must be non-negative");
+	return false;
+    }
+
     if(!sub_command) sub_command = nh.subscribe("command", 1, &PCA9685Activity::onCommand, this);
 
     file = open(param_device.c_str(), O_RDWR);
@@ -100,8 +119,16 @@ bool PCA9685Activity::start() {
 
 bool PCA9685Activity::spinOnce() {
     ros::spinOnce();
-
     ros::Time time = ros::Time::now();
+    uint64_t t = 1000 * (uint64_t)time.sec + (uint64_t)time.nsec / 1e6;
+
+    if(param_timeout > 0) {
+      for(int channel = 0; channel < 16; channel++) {
+        if(t - last_set_times[channel] > param_timeout) {
+          set(channel, 0);
+	}
+      }
+    }
 
     return true;    
 }
@@ -115,17 +142,22 @@ bool PCA9685Activity::stop() {
 }
 
 void PCA9685Activity::onCommand(const std_msgs::Int32MultiArrayPtr &msg) {
+    ros::Time time = ros::Time::now();
+    uint64_t t = 1000 * (uint64_t)time.sec + (uint64_t)time.nsec / 1e6;
+
     if(msg->data.size() != 16) {
         ROS_ERROR("array is not have a size of 16");
         return;
     }
 
-    for(size_t i = 0; i < msg->data.size(); i++) {
-      if(msg->data[i] < 0) continue;
-      if(msg->data[i] > 65535) {
-          set(i, 65535);
+    for(int channel = 0; channel < 16; channel++) {
+      if(msg->data[channel] < 0) continue;
+      if(msg->data[channel] > 65535) {
+          set(channel, 65535);
+	  last_set_times[channel] = t;
       } else {
-          set(i, msg->data[i]);
+          set(channel, msg->data[channel]);
+	  last_set_times[channel] = t;
       }
     }
 }

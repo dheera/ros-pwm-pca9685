@@ -53,7 +53,7 @@ class PCA9685Activity {
     void onCommand(const std_msgs::Int32MultiArrayPtr& msg);
     bool set(uint8_t channel, uint16_t value);
 
-    uint64_t last_command_time;
+    uint64_t last_set_times[16];
 
   private:
     bool reset();
@@ -71,6 +71,7 @@ class PCA9685Activity {
     std::string param_device;
     int param_address;
     int param_frequency;
+    int param_timeout;
 
     // ROS publishers
 
