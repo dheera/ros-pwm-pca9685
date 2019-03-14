@@ -44,7 +44,7 @@ For each motor, there are 3 pins: PWM, IN1, and IN2.
 
 ### Motor channels
 
-* Motor1: PWM = channel 8 (0 - 65535), IN1 = channel 9, IN2 = channel 10
+* Motor1: PWM = channel 8, IN1 = channel 9, IN2 = channel 10
 * Motor2: PWM = channel 13, IN1 = channel 11, IN2 = channel 12
 * Motor3: PWM = channel 2, IN1 = channel 3, IN2 = channel 4
 * Motor4: PWM = channel 7, IN1 = channel 5, IN2 = channel 6
