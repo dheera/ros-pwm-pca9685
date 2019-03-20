@@ -9,13 +9,13 @@ catkin_package(INCLUDE_DIRS include)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(pwm_pca9685_node src/pca9685_activity.cpp src/pwm_pca9685_node.cpp)
+add_executable(pca9685_node src/pca9685_activity.cpp src/pca9685_node.cpp)
 
 include_directories(${catkin_INCLUDE_DIRS})
 
-target_link_libraries(pwm_pca9685_node ${catkin_LIBRARIES})
+target_link_libraries(pca9685_node ${catkin_LIBRARIES})
 
-install(TARGETS pwm_pca9685_node
+install(TARGETS pca9685_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

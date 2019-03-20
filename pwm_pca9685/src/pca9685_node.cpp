@@ -1,4 +1,4 @@
-/* pwm_pca9685_i2c_node.cpp
+/* pca9685_i2c_node.cpp
  * Author: Dheera Venkatraman <dheera@dheera.net>
  *
  * Instantiates a PCA9685 Activity class, as well as
@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
 
     pwm_pca9685::PCA9685Activity* activity = NULL;
 
-    ros::init(argc, argv, "pwm_pca9685_i2c_node");
+    ros::init(argc, argv, "pca9685_node");
 
     nh = new ros::NodeHandle();
     if(!nh) {
