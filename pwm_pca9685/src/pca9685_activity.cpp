@@ -18,7 +18,60 @@ PCA9685Activity::PCA9685Activity(ros::NodeHandle &_nh, ros::NodeHandle &_nh_priv
     nh_priv.param("address", param_address, (int)PCA9685_ADDRESS);
     nh_priv.param("frequency", param_frequency, (int)1600);
     nh_priv.param("frame_id", param_frame_id, (std::string)"imu");
-    nh_priv.param("timeout", param_timeout, (int)5000);
+    
+    // timeouts in milliseconds per channel
+    nh_priv.param("timeout", param_timeout, std::vector<int>{
+        5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000,
+        5000, 5000, 5000, 5000, 5000, 5000, 5000, 5000
+    });
+
+    // minimum pwm value per channel
+    nh_priv.param("pwm_min", param_pwm_min, std::vector<int>{
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0
+    });
+
+    // maximum pwm value per channel
+    nh_priv.param("pwm_max", param_pwm_max, std::vector<int>{
+        65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535,
+        65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535
+    });
+
+    // default pwm value per channel after timeout is reached
+    nh_priv.param("timeout_value", param_timeout_value, std::vector<int>{
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0
+    });
+
+    if(param_timeout.size() != 16) {
+        ROS_ERROR("size of param timeout must be 16");
+        ros::shutdown();
+    }
+
+    if(param_timeout_value.size() != 16) {
+        ROS_ERROR("size of param timeout_value must be 16");
+        ros::shutdown();
+    }
+
+    if(param_pwm_min.size() != 16) {
+        ROS_ERROR("size of param pwm_min must be 16");
+        ros::shutdown();
+    }
+
+    if(param_pwm_max.size() != 16) {
+        ROS_ERROR("size of param pwm_min must be 16");
+        ros::shutdown();
+    }
+
+    if(param_address < 0 || param_address > 127) {
+        ROS_ERROR("param address must be between 0 and 127 inclusive");
+        ros::shutdown();
+    }
+
+    if(param_frequency <= 0) {
+        ROS_ERROR("param frequency must be positive");
+        ros::shutdown();
+    }
 
     for(int channel = 0; channel < 16; channel++) {
       last_set_times[channel] = 0;
@@ -85,21 +138,6 @@ bool PCA9685Activity::set(uint8_t channel, uint16_t value) {
 bool PCA9685Activity::start() {
     ROS_INFO("starting");
 
-    if(param_address < 0 || param_address > 127) {
-        ROS_ERROR("param address must be between 0 and 127 inclusive");
-	return false;
-    }
-
-    if(param_frequency <= 0) {
-        ROS_ERROR("param frequency must be positive");
-	return false;
-    }
-
-    if(param_timeout < 0) {
-        ROS_ERROR("param timeout must be non-negative");
-	return false;
-    }
-
     if(!sub_command) sub_command = nh.subscribe("command", 1, &PCA9685Activity::onCommand, this);
 
     file = open(param_device.c_str(), O_RDWR);
@@ -121,11 +159,9 @@ bool PCA9685Activity::spinOnce() {
     ros::Time time = ros::Time::now();
     uint64_t t = 1000 * (uint64_t)time.sec + (uint64_t)time.nsec / 1e6;
 
-    if(param_timeout > 0) {
-      for(int channel = 0; channel < 16; channel++) {
-        if(t - last_set_times[channel] > param_timeout) {
-          set(channel, 0);
-	}
+    for(int channel = 0; channel < 16; channel++) {
+      if(param_timeout[channel] > 0 && t - last_set_times[channel] > param_timeout[channel]) {
+        set(channel, param_timeout_value[channel]);
       }
     }
 
@@ -151,8 +187,12 @@ void PCA9685Activity::onCommand(const std_msgs::Int32MultiArrayPtr &msg) {
 
     for(int channel = 0; channel < 16; channel++) {
       if(msg->data[channel] < 0) continue;
-      if(msg->data[channel] > 65535) {
-          set(channel, 65535);
+
+      if(msg->data[channel] > param_pwm_max[channel]) {
+	  set(channel, param_pwm_max[channel]);
+	  last_set_times[channel] = t;
+      } else if(msg->data[channel] < param_pwm_min[channel]) {
+          set(channel, param_pwm_min[channel]);
 	  last_set_times[channel] = t;
       } else {
           set(channel, msg->data[channel]);
