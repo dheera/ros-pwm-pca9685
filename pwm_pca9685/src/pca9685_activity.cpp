@@ -159,9 +159,11 @@ bool PCA9685Activity::spinOnce() {
     ros::Time time = ros::Time::now();
     uint64_t t = 1000 * (uint64_t)time.sec + (uint64_t)time.nsec / 1e6;
 
-    for(int channel = 0; channel < 16; channel++) {
-      if(param_timeout[channel] > 0 && t - last_set_times[channel] > param_timeout[channel]) {
-        set(channel, param_timeout_value[channel]);
+    if(seq++ % 10 == 0) {
+      for(int channel = 0; channel < 16; channel++) {
+        if(param_timeout[channel] > 0 && t - last_set_times[channel] > param_timeout[channel]) {
+          set(channel, param_timeout_value[channel]);
+        }
       }
     }
 

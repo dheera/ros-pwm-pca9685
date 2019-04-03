@@ -12,7 +12,7 @@ There should be no dependencies besides libi2c-dev.
 ## Parameters:
 
 * **device** (string) -- the path to the i2c device. Default is /dev/i2c-1. Use i2cdetect in the i2c-tools package to find out which bus your device is on.
-* **address** (int) -- the i2c address of the PCA9685. Default is 0x60.
+* **address** (int) -- the i2c address of the PCA9685. Default is 0x40.
 * **frequency** (int) -- PWM frequency in Hz. Default is 1600.
 * **timeout** (list of ints) -- List of 16 integers corresponding to timeouts in milliseconds for each channel. If any particular channel is not updated in this time, that channel will be set to 0 until another update is received. Defaults to `[ 5000, 5000, ... ]`.
 * **timeout_value** (list of ints) -- The value each channel will be set to upon timeout. Defaults to `[ 0, 0, ... ]`.
@@ -30,7 +30,13 @@ None.
 
 # Usage notes
 
+## With the Adafruit 16-channel servo breakout (or any other servo breakout)
+
+The default I2C address is 0x40. A full servo range corresponds to a PWM duty cycle of about 2800/65535 to 7600/65535 (NOT 0/65535 to 65535/65535), so adjust parameters accordingly.
+
 ## With the Adafruit Motor Driver HAT
+
+The default I2C address is 0x60.
 
 The PCA9685 generates PWM signals that are connected to two TB6612 dual motor driver chips, for a total of 4 motors. Three PCA9685 channels are connected to each motor, as described below, for a total of 4*3=12 channels wired to the motors. The 4 "extra" PWM pins (0, 1, 14, 15) are not connected to any motors are broken out on a separate header on the board.
 

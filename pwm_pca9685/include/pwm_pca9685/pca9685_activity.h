@@ -14,7 +14,7 @@
 #include <linux/i2c-dev.h>
 #include <smbus_functions.h>
 
-#define PCA9685_ADDRESS 0x60
+#define PCA9685_ADDRESS 0x40
 
 #define PCA9685_MODE1_REG 0X00
 #define PCA9685_MODE2_REG 0X01
