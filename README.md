@@ -32,7 +32,7 @@ None.
 
 ## With the Adafruit 16-channel servo breakout (or any other servo breakout)
 
-The default I2C address is 0x40. A full servo range corresponds to a PWM duty cycle of about 2800/65535 to 7600/65535 (NOT 0/65535 to 65535/65535), so adjust parameters accordingly. You will also want to set the **frequency** parameter to 50 Hz for servos.
+The default I2C address is 0x40. A full servo range tyically corresponds to a PWM duty cycle of about 2800/65535 to 7600/65535 (NOT 0/65535 to 65535/65535), so make sure you publish updates according to the servo PWM range. You will also want to set the **frequency** parameter to 50 Hz for servos.
 
 ## With the Adafruit Motor Driver HAT
 
