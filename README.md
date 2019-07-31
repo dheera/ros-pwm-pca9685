@@ -14,8 +14,8 @@ There should be no dependencies besides libi2c-dev.
 * **device** (string) -- the path to the i2c device. Default is /dev/i2c-1. Use i2cdetect in the i2c-tools package to find out which bus your device is on.
 * **address** (int) -- the i2c address of the PCA9685. Default is 0x40.
 * **frequency** (int) -- PWM frequency in Hz. Default is 1600.
-* **timeout** (list of ints) -- List of 16 integers corresponding to timeouts in milliseconds for each channel. If any particular channel is not updated in this time, that channel will be set to the corresponding value in **timeout_value** until another update is received. Defaults to `[ 5000, 5000, ... ]`.
-* **timeout_value** (list of ints) -- The value each channel will be set to upon timeout. Defaults to `[ 0, 0, ... ]`.
+* **timeout** (list of ints) -- List of 16 integers corresponding to timeouts in milliseconds for each channel. If any particular channel is not updated in this time, that channel will be set to the corresponding value in **timeout_value** until another update is received. Defaults to `[ 5000, 5000, ... ]`, i.e. each channel timeouts after 5 seconds if no updates are published.
+* **timeout_value** (list of ints) -- The value each channel will be set to upon timeout. Defaults to `[ 0, 0, ... ]`, i.e. each channel is set to 0 upon timeout.
 * **pwm_min** (list of ints) -- The minimum PWM value for each channel. Defaults to `[ 0, 0, ... ]`. If a command lower than the minimum PWM value is issued, the PWM value will be set to param_min, with the exception of a -1 command, which designates no update (see below).
 * **pwm_max** (list of ints) -- The maximum PWM value for each channel. Defaults to `[ 65535, 65535, ... ]`. If a command larger than param_max is issued, the PWM value will be set to param_max.
 
