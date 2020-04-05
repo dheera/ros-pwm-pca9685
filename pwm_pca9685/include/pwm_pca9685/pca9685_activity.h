@@ -54,6 +54,8 @@ class PCA9685Activity {
     bool set(uint8_t channel, uint16_t value);
 
     uint64_t last_set_times[16];
+    uint64_t last_change_times[16];
+    int last_data[16];
 
   private:
     bool reset();
