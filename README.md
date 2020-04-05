@@ -14,10 +14,10 @@ There should be no dependencies besides libi2c-dev.
 * **device** (string) -- the path to the i2c device. Default is /dev/i2c-1. Use i2cdetect in the i2c-tools package to find out which bus your device is on.
 * **address** (int) -- the i2c address of the PCA9685. Default is 0x40.
 * **frequency** (int) -- PWM frequency in Hz. Default is 1600.
-* **timeout** (list of ints) -- List of 16 integers corresponding to timeouts in milliseconds for each channel. If any particular channel is not updated in this time, that channel will be set to 0 until another update is received. Defaults to `[ 5000, 5000, ... ]`.
-* **timeout_value** (list of ints) -- The value each channel will be set to upon timeout. Defaults to `[ 0, 0, ... ]`.
-* **param_min** (list of ints) -- The minimum PWM value for each channel. Defaults to `[ 0, 0, ... ]`. If a command lower than the minimum PWM value is issued, the PWM value will be set to param_min, with the exception of a -1 command, which designates no update (see below).
-* **param_max** (list of ints) -- The maximum PWM value for each channel. Defaults to `[ 65535, 65535, ... ]`. If a command larger than param_max is issued, the PWM value will be set to param_max.
+* **timeout** (list of ints) -- List of 16 integers corresponding to timeouts in milliseconds for each channel. If any particular channel is not updated in this time, that channel will be set to the corresponding value in **timeout_value** until another update is received. Defaults to `[ 5000, 5000, ... ]`, i.e. each channel timeouts after 5 seconds if no updates are published.
+* **timeout_value** (list of ints) -- The value each channel will be set to upon timeout. Defaults to `[ 0, 0, ... ]`, i.e. each channel is set to 0 upon timeout.
+* **pwm_min** (list of ints) -- The minimum PWM value for each channel. Defaults to `[ 0, 0, ... ]`. If a command lower than the minimum PWM value is issued, the PWM value will be set to param_min, with the exception of a -1 command, which designates no update (see below).
+* **pwm_max** (list of ints) -- The maximum PWM value for each channel. Defaults to `[ 65535, 65535, ... ]`. If a command larger than param_max is issued, the PWM value will be set to param_max.
 
 ## Subscribers
 * **command** -- a Int32MultiArray containing exactly 16 values corresponding to the 16 PWM channels. For each value, specify -1 to make no update to a channel. Specify a value between 0 and 65535 inclusive to update the channel's PWM value. For example, ```{data: [32767, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]}``` will update channel 0 to a PWM of 50%, channel 1 to 0%, and make no updates to other channels.
@@ -32,7 +32,7 @@ None.
 
 ## With the Adafruit 16-channel servo breakout (or any other servo breakout)
 
-The default I2C address is 0x40. A full servo range corresponds to a PWM duty cycle of about 2800/65535 to 7600/65535 (NOT 0/65535 to 65535/65535), so adjust parameters accordingly.
+The default I2C address is 0x40. A full servo range tyically corresponds to a PWM duty cycle of about 2800/65535 to 7600/65535 (NOT 0/65535 to 65535/65535), so make sure you publish updates according to the servo PWM range. You will also want to set the **frequency** parameter to 50 Hz for servos.
 
 ## With the Adafruit Motor Driver HAT
 
