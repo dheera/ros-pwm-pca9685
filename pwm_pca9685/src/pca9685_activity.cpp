@@ -206,7 +206,7 @@ void PCA9685Activity::onCommand(const std_msgs::Int32MultiArrayPtr &msg) {
           last_change_times[channel] = t;
       }
 
-      if(msg->data[channel] == last_data[channel] && param_timeout[channel] < 0) return;
+      if(msg->data[channel] == last_data[channel] && param_timeout[channel]) continue;
 
       if(msg->data[channel] > param_pwm_max[channel]) {
 	  set(channel, param_pwm_max[channel]);
