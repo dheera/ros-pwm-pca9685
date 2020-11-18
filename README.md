@@ -61,9 +61,11 @@ For each motor, there are 3 pins: PWM, IN1, and IN2.
 For example, to set motor 1 to forward at 50%, send ```{data: [-1, -1, -1, -1, -1, -1, -1, -1, 32767, 65535, 0, -1, -1, -1, -1, -1]}```
 
 Command Line Example: Again setting motor 1 to forward at 50%.
+
     rostopic pub -1 /command std_msgs/Int32MultiArray -- {data:'[-1,-1,-1,-1,-1,-1,-1,-1,32767,65535,0,-1,-1,-1,-1,-1]'}	
 
 Python Example: Again setting motor 1 to forward at 50%.
+
     import rospy
     from std_msgs.msg import Int32MultiArray
     pub = rospy.Publisher('command', Int32MultiArray, queue_size=10)
